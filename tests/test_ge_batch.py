@@ -43,7 +43,8 @@ def ge_context_yaml_config() -> str:
           group_names:
             - data_asset_name
             - eco_letter
-          pattern: (.*)-(\w)\.csv
+            - file_extension
+          pattern: (.*)-(\w)\.(csv)
         """
 
     return yaml_config
@@ -71,37 +72,40 @@ def test_data_context(ge_dir: Path, ge_context_yaml_config: str):
 
     expectation_suite: ExpectationSuite = ge_data_context.get_expectation_suite(expectation_suite_name)
 
-    batch_request: BatchRequest = BatchRequest(
-        datasource_name=datasource_name,
-        data_connector_name=dataconnector_name,
-        data_asset_name=data_asset_name,
-        data_connector_query={
-            "batch_filter_parameters": {
-                "eco_letter": "A",
+    for letter in ['A', 'B', 'C', 'D', 'E']:
+
+        batch_request: BatchRequest = BatchRequest(
+            datasource_name=datasource_name,
+            data_connector_name=dataconnector_name,
+            data_asset_name=data_asset_name,
+            data_connector_query={
+                "batch_filter_parameters": {
+                    "eco_letter": letter,
+                }
+            },
+        )
+
+        ge_validator: Validator = ge_data_context.get_validator(
+            batch_request=batch_request, expectation_suite=expectation_suite
+        )
+
+        active_batch: Batch = ge_validator.active_batch
+
+        assert not active_batch.head().empty  # for show :-)
+
+        # run it
+        for batch in data_source.get_batch_list_from_batch_request(batch_request):
+            run_id = {
+                "run_name": str(uuid4()),  # insert your own run_name here
+                "run_time": datetime.datetime.now(datetime.timezone.utc)
             }
-        },
-    )
 
-    ge_validator: Validator = ge_data_context.get_validator(
-        batch_request=batch_request, expectation_suite=expectation_suite
-    )
+            results: ValidationOperatorResult = ge_data_context.run_validation_operator(
+                "action_list_operator",
+                assets_to_validate=[ge_validator],
+                run_id=run_id)
 
-    active_batch: Batch = ge_validator.active_batch
-
-    assert not active_batch.head().empty  # for show :-)
-
-    # run it
-    run_id = {
-        "run_name": str(uuid4()),  # insert your own run_name here
-        "run_time": datetime.datetime.now(datetime.timezone.utc)
-    }
-
-    results: ValidationOperatorResult = ge_data_context.run_validation_operator(
-        "action_list_operator",
-        assets_to_validate=[ge_validator],
-        run_id=run_id)
-
-    assert not results.success  # there are players with elo > 2000
+        assert not results.success  # there are players with elo > 2000
 
     # TODO: generate docs
 
