@@ -94,16 +94,15 @@ def test_data_context(ge_dir: Path, ge_context_yaml_config: str):
         assert not active_batch.head().empty  # for show :-)
 
         # run it
-        for batch in data_source.get_batch_list_from_batch_request(batch_request):
-            run_id = {
-                "run_name": str(uuid4()),  # insert your own run_name here
-                "run_time": datetime.datetime.now(datetime.timezone.utc)
-            }
+        run_id = {
+            "run_name": str(uuid4()),  # insert your own run_name here
+            "run_time": datetime.datetime.now(datetime.timezone.utc)
+        }
 
-            results: ValidationOperatorResult = ge_data_context.run_validation_operator(
-                "action_list_operator",
-                assets_to_validate=[ge_validator],
-                run_id=run_id)
+        results: ValidationOperatorResult = ge_data_context.run_validation_operator(
+            "action_list_operator",
+            assets_to_validate=[ge_validator],
+            run_id=run_id)
 
         assert not results.success  # there are players with elo > 2000
 
