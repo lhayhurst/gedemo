@@ -1,14 +1,16 @@
 from pathlib import Path
 
 import great_expectations as ge
-import pandas as pd
-import pytest
 from great_expectations.core import (
-    ExpectationSuiteValidationResult,
     ExpectationSuite,
+    ExpectationSuiteValidationResult,
     ExpectationValidationResult,
 )
 from great_expectations.dataset import PandasDataset
+
+import pandas as pd
+
+import pytest
 
 
 @pytest.fixture()
@@ -19,7 +21,7 @@ TTzZc8gW,TRUE,1.50294E+12,1.50294E+12,135,mate,white,10+0,harrygz,2100,dbschultz
 4SrloqB0,TRUE,1.50067E+12,1.50067E+12,46,resign,black,10+5,comped,2001,chesscarl,2105,c4 Nf6 Nc3 e5 g3 d5 cxd5 Nxd5 Bg2 Nb6 Nf3 Nc6 e3 Bd6 d4 O-O O-O Bg4 Qd3 Be6 b3 Be7 Rd1 exd4 Nxd4 Nxd4 Qxd4 Qxd4 exd4 c6 Bb2 Rfd8 Rd3 Rd7 Rad1 Rad8 a4 Bxb3 R1d2 Bb4 Re2 Bc4 Rde3 Bxe2 Nxe2 Nxa4,A22,English Opening: King's English Variation |  Two Knights Variation |  Reversed Dragon,6
 dnwPq0Ru,FALSE,1.50077E+12,1.50077E+12,24,resign,black,10+0,mrphaseolusvulgaris,1712,alpv,1959,c4 Nf6 Nc3 e5 e3 Nc6 Be2 b6 d3 Bb7 Nf3 g6 O-O Bg7 Nd2 d5 cxd5 Nxd5 a3 O-O Qc2 Rc8 f4 Nxe3,A22,English Opening: King's English Variation |  Two Knights Variation,4
 P459rzus,FALSE,1.50387E+12,1.50388E+12,74,mate,black,15+15,canexd,1104,canid,1500,c4 e5 Nc3 Nf6 d3 Bb4 Bd2 Nc6 a3 Bxc3 bxc3 d5 Qa4 Bd7 Qb3 Na5 Qb4 c6 Qc5 b6 Qe3 dxc4 Qxe5+ Be6 Rb1 cxd3 exd3 O-O Nf3 Nb3 Be3 Re8 c4 Bg4 Qg3 Bxf3 Qxf3 Nd4 Qf4 Nh5 Qg4 Nf6 Qh4 Nf5 Qf4 Nxe3 fxe3 Rb8 Rd1 Qe7 e4 Qxa3 e5 Qe7 d4 c5 Kf2 Nh5 Qf5 g6 Qe4 Rbd8 d5 Qxe5 Qd3 Nf6 Re1 Qxe1+ Kg1 Ng4 Qf3 Qe3+ Qf2 Qxf2#,A22,English Opening: King's English Variation |  Two Knights Variation,4
-"""
+"""  # noqa: E501
     csvfile = tmp_path / "data.csv"
     csvfile.write_text(data)
     return csvfile
@@ -59,7 +61,7 @@ def test_ge_generally(csvpath: Path):
         assert df_ge.expect_column_values_to_be_of_type(col, et).success
 
     # there are a bunch of patzers in this dataset ;-) verify that
-    # I've spiked harrygz in the test data fixture to have a rating of 2100 in order to simulate a failure
+    # harrygz in the test data fixture to has a rating of 2100 in order to simulate a failure
     assert not df_ge.expect_column_values_to_be_between(
         column="white_rating", min_value=500, max_value=2000
     ).success

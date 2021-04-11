@@ -19,11 +19,25 @@ make deps
 
 This will run `poetry install` and `poetry run nox --install-only`. You can run `make help` to see more make targets. Alternatively, you can just run `poetry`'s CLI; see [the Makefile](Makefile)'s make targets for inspiration. 
 
+To run the tests:
+
 ```bash
-make clean
+make test
 ```
 
-Will clean out your install. 
+You can run `make` with no arguments to list the available make targets.
+
+```bash
+$ make 
+black                          reformat all files for black. good for when someone else needs to read your code.
+clean                          clean up project
+cov                            run test coverage report
+help                           me
+lint                           run flake8 linter
+safety                         check for open source vulnerabilities with safety
+test                           run tests after running black check, flake8, and mypy
+thorough                       the full treatment: black check, flake8, mypy, and safety
+```
 
 ## Configuration
 

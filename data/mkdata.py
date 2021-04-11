@@ -20,4 +20,3 @@ if __name__ == "__main__":
             files[code].write(line)
             if i % 100 == 0:
                 print(f"processed {i} records")
-

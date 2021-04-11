@@ -4,15 +4,17 @@ import shutil
 from pathlib import Path
 from uuid import uuid4
 
-import pytest
+from great_expectations import DataContext
 from great_expectations.core import ExpectationSuite
-from great_expectations.core.batch import BatchRequest, Batch
+from great_expectations.core.batch import Batch, BatchRequest
 from great_expectations.datasource import Datasource
 from great_expectations.exceptions import ConfigNotFoundError
-from great_expectations.validation_operators.types.validation_operator_result import ValidationOperatorResult
+from great_expectations.validation_operators.types.validation_operator_result import (
+    ValidationOperatorResult,
+)
 from great_expectations.validator.validator import Validator
 
-from great_expectations import DataContext
+import pytest
 
 
 @pytest.fixture
@@ -72,8 +74,7 @@ def test_data_context(ge_dir: Path, ge_context_yaml_config: str):
 
     expectation_suite: ExpectationSuite = ge_data_context.get_expectation_suite(expectation_suite_name)
 
-    for letter in ['A', 'B', 'C', 'D', 'E']:
-
+    for letter in ["A", "B", "C", "D", "E"]:
         batch_request: BatchRequest = BatchRequest(
             datasource_name=datasource_name,
             data_connector_name=dataconnector_name,
@@ -96,15 +97,13 @@ def test_data_context(ge_dir: Path, ge_context_yaml_config: str):
         # run it
         run_id = {
             "run_name": str(uuid4()),  # insert your own run_name here
-            "run_time": datetime.datetime.now(datetime.timezone.utc)
+            "run_time": datetime.datetime.now(datetime.timezone.utc),
         }
 
         results: ValidationOperatorResult = ge_data_context.run_validation_operator(
-            "action_list_operator",
-            assets_to_validate=[ge_validator],
-            run_id=run_id)
+            "action_list_operator", assets_to_validate=[ge_validator], run_id=run_id
+        )
 
         assert not results.success  # there are players with elo > 2000
 
     # TODO: generate docs
-
